@@ -22,9 +22,6 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static com.example.ChromedriverManager.countChromedriverInstances;
-import static com.example.ChromedriverManager.killExcessChromedriverProcesses;
-
 public class kazuya extends SimpleListenerHost {
     private static final String senderName = "ᕕ(◠ڼ◠)ᕗ";
     private static final String QQ_GROUP_ID = "261965114";
@@ -101,17 +98,7 @@ public class kazuya extends SimpleListenerHost {
                     }
                 }
             } catch (Exception e) {
-                try {
-                    int maxInstances = 5; // Maximum number of allowed chromedriver instances
-                    int currentInstances = countChromedriverInstances();
 
-                    if (currentInstances > maxInstances) {
-                        killExcessChromedriverProcesses(currentInstances - maxInstances);
-                    }
-                } catch (IOException ex) {
-                    // Handle exception
-                    ex.printStackTrace();
-                }
                 SendError.send("Main Exception", event);
             }
         }
@@ -152,15 +139,6 @@ public class kazuya extends SimpleListenerHost {
         } catch (IOException e) {
             // Port is already in use
             return true;
-        }
-    }
-
-    public static void startLiveServer() {
-        try {
-            Runtime.getRuntime().exec("cmd /k d: & cd D:\\Downloads\\kazuya.com & live-server --port=9000");
-//            process.waitFor();
-        } catch (IOException e) {
-            e.printStackTrace();
         }
     }
 
