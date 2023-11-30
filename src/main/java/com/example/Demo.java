@@ -4,14 +4,11 @@ import net.mamoe.mirai.console.plugin.jvm.JavaPlugin;
 import net.mamoe.mirai.console.plugin.jvm.JvmPluginDescriptionBuilder;
 import net.mamoe.mirai.event.GlobalEventChannel;
 
-import static com.example.kazuya.isPortInUse;
-import static com.example.kazuya.startLiveServer;
-
 public final class Demo extends JavaPlugin {
-    public static final Demo INSTANCE = new Demo();
+//    public static final Demo INSTANCE = new Demo();
 
     private Demo() {
-        super(new JvmPluginDescriptionBuilder("com.example.demo", "0.5.0")
+        super(new JvmPluginDescriptionBuilder("com.example.demo", "0.6.0")
                 .name("Demo")
                 .author("Administrator")
                 .build());
@@ -35,9 +32,5 @@ public final class Demo extends JavaPlugin {
 //
 //        });
 
-        if (!isPortInUse(9000)) {
-            startLiveServer();
-            getLogger().info("startLiveServer!");
-        }
     }
 }
