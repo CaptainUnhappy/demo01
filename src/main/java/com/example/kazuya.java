@@ -22,6 +22,9 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static com.example.ChromedriverManager.countChromedriverInstances;
+import static com.example.ChromedriverManager.killExcessChromedriverProcesses;
+
 public class kazuya extends SimpleListenerHost {
     private static final String senderName = "ᕕ(◠ڼ◠)ᕗ";
     private static final String QQ_GROUP_ID = "261965114";
@@ -99,10 +102,15 @@ public class kazuya extends SimpleListenerHost {
                 }
             } catch (Exception e) {
                 try {
-                    Runtime.getRuntime().exec("taskkill /F /IM chromedriver.exe /T");
+                    int maxInstances = 5; // Maximum number of allowed chromedriver instances
+                    int currentInstances = countChromedriverInstances();
+
+                    if (currentInstances > maxInstances) {
+                        killExcessChromedriverProcesses(currentInstances - maxInstances);
+                    }
                 } catch (IOException ex) {
-//                    throw new RuntimeException(ex);
-                    SendError.send("taskkill", event);
+                    // Handle exception
+                    ex.printStackTrace();
                 }
                 SendError.send("Main Exception", event);
             }
