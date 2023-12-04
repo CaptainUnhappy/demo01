@@ -98,7 +98,12 @@ public class kazuya extends SimpleListenerHost {
                     }
                 }
             } catch (Exception e) {
-
+                try {
+                    Runtime.getRuntime().exec("taskkill /F /IM chromedriver.exe /T");
+                } catch (IOException ex) {
+//                    throw new RuntimeException(ex);
+                    SendError.send("taskkill", event);
+                }
                 SendError.send("Main Exception", event);
             }
         }
@@ -106,9 +111,9 @@ public class kazuya extends SimpleListenerHost {
     }
 
 
-    public static ChromeDriver CreateChromeDriver() {
+    public static ChromeDriver CreateChromeDriver() throws Exception {
         try {
-            System.setProperty("webdriver.chrome.driver", "D:/Downloads/chromedriver-win32/chromedriver.exe");
+            System.setProperty("webdriver.chrome.driver", "D:/Downloads/chromedriver-win64/chromedriver.exe");
             ChromeOptions options = new ChromeOptions();
             options.addArguments("--headless");
             options.addArguments("--disable-gpu");
@@ -125,10 +130,9 @@ public class kazuya extends SimpleListenerHost {
                 System.out.println("driver .com");
                 driver.get("http://kazuyamishima.com/");
             }
-//            setDriver(driver);
             return driver;
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            throw new Exception("Create Exception");
         }
     }
 
@@ -534,7 +538,7 @@ public class kazuya extends SimpleListenerHost {
                 put("693213805", "kirby");
                 put("934359739", "fox");
                 put("309517633", "pikachu/pichu");
-                put("331910424", "luigi");
+                put("700690548", "luigi");
                 put("739033553", "ness/lucas");
                 put("1040237002", "captain_falcon");
                 put("691608173", "jigglypuff");
@@ -663,6 +667,7 @@ public class kazuya extends SimpleListenerHost {
                 put("江苏苏州", "731583899");
                 put("浙江宁波", "761258230");
                 put("吉林市", "736226148");
+                put("广东珠海", "712692054");
 
 
                 put("大师", "875979025");
