@@ -12,6 +12,7 @@ import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.URL;
@@ -30,6 +31,8 @@ public class kazuya extends SimpleListenerHost {
 
     static String[] sarr = {"mario", "donkey_kong", "link", "dark_samus", "samus", "yoshi", "kirby", "fox", "pikachu", "luigi", "ness", "captain_falcon", "jigglypuff", "daisy", "peach", "bowser", "ice_climbers", "sheik", "zelda", "dr_mario", "pichu", "falco", "lucina", "marth", "young_link", "ganondorf", "mewtwo", "chrom", "roy", "gnw", "meta_knight", "dark_pit", "pit", "zss", "wario", "snake", "ike", "squirtle", "ivysaur", "charizard", "diddy_kong", "lucas", "sonic", "king_dedede", "olimar", "lucario", "rob", "toon_link", "wolf", "villager", "mega_man", "wii_fit_trainer", "rosalina", "little_mac", "greninja", "mii_brawler", "mii_sword", "mii_gunner", "palutena", "pac_man", "robin", "shulk", "bowser_jr", "duck_hunt", "ken", "ryu", "cloud", "corrin", "bayonetta", "inkling", "ridley", "richter", "simon", "king_k_rool", "isabelle", "incineroar", "piranha_plant", "joker", "hero", "banjo", "terry", "byleth", "min_min", "steve", "sephiroth", "pyra", "mythra", "kazuya", "sora"};
     static String url = "http://kazuyamishima.com/details/";
+
+    static String image_path = "D:\\Downloads\\kazuya_image\\";
 
     @EventHandler
     private ListeningStatus onEvent(MessageEvent event) {
@@ -67,7 +70,9 @@ public class kazuya extends SimpleListenerHost {
             } else if (GroupId != null && !GroupId.isEmpty()) {
                 event.getSubject().sendMessage((name != null ? name : input) + " : " + GroupId);
             }
-        } else if (startNumber(commandList, input) != -1 && (qqid.equals(QQ_GROUP_ID) || event.getSender().getId() == ADMIN_USER_ID || qqid.equals("1613341351"))) {
+            // TODO ADMIN_USER_ID fix input & data test
+        } else if (startNumber(commandList, input) != -1 && (qqid.equals(QQ_GROUP_ID) || qqid.equals("793888025")  || qqid.equals("1613341351"))) {
+//        } else if (startNumber(commandList, input) != -1 && (qqid.equals(QQ_GROUP_ID) || event.getSender().getId() == ADMIN_USER_ID || qqid.equals("1613341351"))) {
             try {
 //                if (ChromeDriver == null) CreateChromeDriver();
                 input = replaceCommand(commandList, input.trim());
@@ -94,7 +99,8 @@ public class kazuya extends SimpleListenerHost {
                     nameSet.remove(null);
                     if (!nameSet.isEmpty()) {
                         event.getSubject().sendMessage("正在查询" + nameSet);
-                        GetAll(nameSet.toArray(new String[]{}), event, CreateChromeDriver());
+                        GetAllFix(nameSet.toArray(new String[]{}), event);
+//                        GetAll(nameSet.toArray(new String[]{}), event, CreateChromeDriver());
                     }
                 }
             } catch (Exception e) {
@@ -234,6 +240,28 @@ public class kazuya extends SimpleListenerHost {
         }
         driver.quit();
     }
+    public static void GetAllFix(String[] list, MessageEvent event) {
+        MessageChainBuilder messageChainBuilder = new MessageChainBuilder();
+        ForwardMessageBuilder forwardMessageBuilder = new ForwardMessageBuilder(event.getSubject());
+        int MaxTotal = 3;
+        for (String name : list) {
+            File localfile = new File(image_path + name + ".png");
+
+            Image image = null;
+            if (localfile.exists()) {
+                image = Contact.uploadImage(event.getSubject(), localfile);
+            }
+
+            messageChainBuilder.append(image);
+            forwardMessageBuilder.add(event.getBot().getId(), senderName, image);
+        }
+        if (list.length <= MaxTotal) {
+            event.getSubject().sendMessage(messageChainBuilder.build().plus(new At(event.getSender().getId())));
+        } else {
+            ForwardMessage forward = forwardMessageBuilder.build();
+            event.getSubject().sendMessage(forward);
+        }
+    }
 
     public static int startNumber(String[] array, String str) {
         for (int i = 0; i < array.length; i++) {
@@ -316,7 +344,7 @@ public class kazuya extends SimpleListenerHost {
             put("mii_brawler", "mii_brawler/miibrawler/拳击mii/mii拳击/拳mii/mii拳");
             put("mii_gunner", "mii_gunner/miigunner/枪mii/mii枪");
             put("mii_sword", "mii_swordfighter/miiswordfighter/剑mii/mii剑");
-            put("min_min", "minmin/面面");
+            put("min_min", "minmin/面面/min_min");
             put("gnw", "gnw/mrgameandwatch/mrgame&watch/小黑人/代码人/gw/gamewatch");
             put("mythra", "mythra/光/光焰");
             put("ness", "ness/奈斯/naisi");
