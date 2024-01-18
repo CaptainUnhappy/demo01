@@ -8,6 +8,7 @@ import net.mamoe.mirai.event.events.MessageEvent;
 import net.mamoe.mirai.message.data.*;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
+import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
@@ -225,7 +226,7 @@ public class kazuya extends SimpleListenerHost {
                 SendError.send("群号err", event);
             }
             try {
-                Image image = Contact.uploadImage(event.getSubject(), WebImg.extracted("//div[@class='modal-content']", driver));
+                Image image = Contact.uploadImage(event.getSubject(), WebImg.extracted(driver.findElement(By.xpath("//div[@class='modal-content']")), driver));
                 messageChainBuilder.append(image);
                 forwardMessageBuilder.add(event.getBot().getId(), senderName, image);
             } catch (InterruptedException | IOException e) {

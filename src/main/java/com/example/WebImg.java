@@ -11,10 +11,7 @@ import java.io.InputStream;
 import java.nio.file.Files;
 
 public class WebImg {
-    public static InputStream extracted(String screenXpath, ChromeDriver driver) throws InterruptedException, IOException {
-        //找图表
-        WebElement img = driver.findElement(By.xpath(screenXpath));
-//        Thread.sleep(3000);
+    public static InputStream extracted(WebElement element, ChromeDriver driver) throws InterruptedException, IOException {
         // 通过执行脚本解决Selenium截图不全问题
         long maxWidth = (long) driver.executeScript(
                 "return Math.max(document.body.scrollWidth, document.body.offsetWidth, document.documentElement.clientWidth, document.documentElement.scrollWidth, document.documentElement.offsetWidth);");
@@ -27,18 +24,18 @@ public class WebImg {
         int windowsHeight = Integer.parseInt(String.valueOf(o1));
 
         //图片位置
-        Point location = img.getLocation();
+        Point location = element.getLocation();
         //图片y坐标
         int y = location.getY();
         //窗口滑动高度
-        int move = y + img.getSize().height > windowsHeight ? y + img.getSize().height - windowsHeight : 0;
+        int move = y + element.getSize().height > windowsHeight ? y + element.getSize().height - windowsHeight : 0;
         //滑动窗口
         if (move > 0) {
             ((JavascriptExecutor) driver).executeScript("window.scrollTo(0, " + move + ")");
         }
 //        Thread.sleep(2000);
         File imgPath = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
-        return Files.newInputStream(captureElement(imgPath, img, move).toPath());
+        return Files.newInputStream(captureElement(imgPath, element, move).toPath());
 //        SendImageFile(Files.newInputStream(captureElement(imgPath, img, move).toPath()));
 //        imgPath.deleteOnExit();
     }
