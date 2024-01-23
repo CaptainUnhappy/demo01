@@ -3,16 +3,16 @@ package com.example;
 import net.mamoe.mirai.event.EventHandler;
 import net.mamoe.mirai.event.ListeningStatus;
 import net.mamoe.mirai.event.SimpleListenerHost;
-import net.mamoe.mirai.event.events.FriendMessageEvent;
+import net.mamoe.mirai.event.events.MessageEvent;
 import net.mamoe.mirai.message.data.PlainText;
 
 public class test extends SimpleListenerHost {
 
     // 注册事件监听器，当好友消息事件发生时调用onEvent方法
     @EventHandler
-    private ListeningStatus onEvent(FriendMessageEvent event) {
+    private ListeningStatus onEvent(MessageEvent event) {
         // 获取消息内容
-        String s = event.getMessage().contentToString();
+        String s = event.getMessage().contentToString().trim();
         // 判断是否为"hi"
         if (s.equals("hi")) {
             // 发送回复消息

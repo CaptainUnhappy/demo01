@@ -8,7 +8,7 @@ public final class Demo extends JavaPlugin {
     public static final Demo INSTANCE = new Demo();
 
     private Demo() {
-        super(new JvmPluginDescriptionBuilder("com.example.demo", "0.7.0")
+        super(new JvmPluginDescriptionBuilder("com.example.demo", "0.8.0")
                 .name("Demo")
                 .author("Administrator")
                 .build());
@@ -25,6 +25,7 @@ public final class Demo extends JavaPlugin {
         GlobalEventChannel.INSTANCE.registerListenerHost(new test03());
         GlobalEventChannel.INSTANCE.registerListenerHost(new test04());
         GlobalEventChannel.INSTANCE.registerListenerHost(new kazuya());
+        GlobalEventChannel.INSTANCE.registerListenerHost(new douban_movie());
 //        GlobalEventChannel.INSTANCE.registerListenerHost(new rise());
 
 //        GlobalEventChannel.INSTANCE.subscribeAlways(MessageEvent.class,g -> {

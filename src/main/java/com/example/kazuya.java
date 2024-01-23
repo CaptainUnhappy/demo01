@@ -62,18 +62,22 @@ public class kazuya extends SimpleListenerHost {
         if (input.matches(".*群(号)?.*") && !input.matches("群(号)?")) {
             input = input.replaceAll("群(号)?", "").trim();
             String GroupId = GetPlaceGroup(input);
-            String name = GetCharId(input);
-            if (name != null) {
+
+            String name = GetSpecialCharId(input);
+            if (name == null)
+                name = GetCharId(input);
+            if (name != null)
                 GroupId = GetCharacterGroup(name);
-            }
+
+
             if (qqid.equals(GroupId)) {
                 event.getSubject().sendMessage("不许原地tp");
             } else if (GroupId != null && !GroupId.isEmpty()) {
                 event.getSubject().sendMessage((name != null ? name : input) + " : " + GroupId);
             }
             // TODO ADMIN_USER_ID fix input & data test
-        } else if (startNumber(commandList, input) != -1 && (qqid.equals(QQ_GROUP_ID) || qqid.equals("793888025")  || qqid.equals("1613341351"))) {
-//        } else if (startNumber(commandList, input) != -1 && (qqid.equals(QQ_GROUP_ID) || event.getSender().getId() == ADMIN_USER_ID || qqid.equals("1613341351"))) {
+//        } else if (startNumber(commandList, input) != -1 && (qqid.equals(QQ_GROUP_ID) || qqid.equals("793888025")  || qqid.equals("1613341351"))) {
+        } else if (startNumber(commandList, input) != -1 && (qqid.equals(QQ_GROUP_ID) || event.getSender().getId() == ADMIN_USER_ID || qqid.equals("1613341351"))) {
             try {
 //                if (ChromeDriver == null) CreateChromeDriver();
                 input = replaceCommand(commandList, input.trim());
@@ -84,7 +88,7 @@ public class kazuya extends SimpleListenerHost {
                 if (input.equals("菜单")) {
                     Menu(event);
                 }
-                if (input.equals("列表") || input.equals("方向") || input.equals("简易") || input.equals("下投") || input.equalsIgnoreCase("横S") || input.equalsIgnoreCase("空n") || input.equalsIgnoreCase("蹲a") || input.equalsIgnoreCase("1a")|| input.equalsIgnoreCase("魔神")) {
+                if (input.equals("列表") || input.equals("方向") || input.equals("简易") || input.equals("下投") || input.equalsIgnoreCase("横S") || input.equalsIgnoreCase("空n") || input.equalsIgnoreCase("蹲a") || input.equalsIgnoreCase("1a") || input.equalsIgnoreCase("魔神")) {
                     ImageList(event, input);
                 } else if (tmpList.length > 0) {
                     Set<String> nameSet = new LinkedHashSet<>();
@@ -180,17 +184,17 @@ public class kazuya extends SimpleListenerHost {
                     ((JavascriptExecutor) driver).executeScript("document.querySelector(\"#details-combo-tree > table:nth-child(2) > tbody > tr:nth-child(2) > td:nth-child(2)\").innerHTML ='<i class=\"icon-false text-no\" title=\"No\"></i>'");
                 } else if (name.equals("shulk")) {
                     ((JavascriptExecutor) driver).executeScript("document.querySelector(\"body > div.fade.c-fighter-details.modal.show > div > div > div.c-fighter-details__body > button:nth-child(1) > h3\").innerHTML='对局中特定技能 注意事项'\n" +
-                            "document.querySelector(\"#details-specific-considerations > h4:nth-child(1)\").innerHTML = '莫纳德-武技'\n" +
-                            "document.querySelector(\"#details-specific-considerations > p:nth-child(2)\").innerHTML='由于修尔克能在受击状态下切换武技来脱连 不同的武技对不同的招式效果也不同'\n" +
-                            "document.querySelector(\"#details-specific-considerations > p:nth-child(3)\").innerHTML='由于修尔克有这种选项，在大多数情况下\\n'+\n" +
-                            "'一八最喜欢看到的是修尔克进行简单的切换，这样可以讲修尔克至于不利的位置，比如简单的电风确认在修尔克没盾的时候也可以生效'\n" +
-                            "'由于修尔克能在受击状态下切换武技来脱连 不同的武技对不同的招式效果也不同'\n" +
-                            "document.querySelector(\"#details-specific-considerations > p:nth-child(4)\").innerHTML=\n" +
-                            "'简单的对策，简单的科普：修尔克不能在被抓住或者被绊倒或埋地的时候使用武技脱连，电风打中他武技状态是第一次电风命中的时候被击中的状态，而不是启动时的状态'\n" +
-                            "document.querySelector(\"#details-specific-considerations > h4:nth-child(6)\").innerHTML='对修尔克特定连段'\n" +
-                            "document.querySelector(\"#details-specific-considerations > p:nth-child(7)\").innerHTML='如果修尔克在一八的电风中开盾武技，最好的办法就是电风电风电风，你电风的次数取决于修尔克盾buff的持续时间或者修尔克想要关掉盾不给你连之前，你都是可以电风接电风的'\n" +
-                            "document.querySelector(\"#details-specific-considerations > h4:nth-child(9)\").innerHTML='电风被对策的情况'\n" +
-                            "document.querySelector(\"#details-specific-considerations > p.small.mb-0\").innerHTML='轮盘储存了疾之后，修尔克拥有了惩罚电风的能力，修尔克盾buff切疾buff的瞬间，缓冲了轮盘通过切换武技的无敌帧，修尔克会提前落地获得优势帧，便可以惩罚电风，一八可以反应后用魔神拳读他切换 跟读闪一样。听起来像打宝可梦训练家，一八可以在1a3a后放帧等宝可梦切换 再魔神，打修尔克同理'");
+                                                                "document.querySelector(\"#details-specific-considerations > h4:nth-child(1)\").innerHTML = '莫纳德-武技'\n" +
+                                                                "document.querySelector(\"#details-specific-considerations > p:nth-child(2)\").innerHTML='由于修尔克能在受击状态下切换武技来脱连 不同的武技对不同的招式效果也不同'\n" +
+                                                                "document.querySelector(\"#details-specific-considerations > p:nth-child(3)\").innerHTML='由于修尔克有这种选项，在大多数情况下\\n'+\n" +
+                                                                "'一八最喜欢看到的是修尔克进行简单的切换，这样可以讲修尔克至于不利的位置，比如简单的电风确认在修尔克没盾的时候也可以生效'\n" +
+                                                                "'由于修尔克能在受击状态下切换武技来脱连 不同的武技对不同的招式效果也不同'\n" +
+                                                                "document.querySelector(\"#details-specific-considerations > p:nth-child(4)\").innerHTML=\n" +
+                                                                "'简单的对策，简单的科普：修尔克不能在被抓住或者被绊倒或埋地的时候使用武技脱连，电风打中他武技状态是第一次电风命中的时候被击中的状态，而不是启动时的状态'\n" +
+                                                                "document.querySelector(\"#details-specific-considerations > h4:nth-child(6)\").innerHTML='对修尔克特定连段'\n" +
+                                                                "document.querySelector(\"#details-specific-considerations > p:nth-child(7)\").innerHTML='如果修尔克在一八的电风中开盾武技，最好的办法就是电风电风电风，你电风的次数取决于修尔克盾buff的持续时间或者修尔克想要关掉盾不给你连之前，你都是可以电风接电风的'\n" +
+                                                                "document.querySelector(\"#details-specific-considerations > h4:nth-child(9)\").innerHTML='电风被对策的情况'\n" +
+                                                                "document.querySelector(\"#details-specific-considerations > p.small.mb-0\").innerHTML='轮盘储存了疾之后，修尔克拥有了惩罚电风的能力，修尔克盾buff切疾buff的瞬间，缓冲了轮盘通过切换武技的无敌帧，修尔克会提前落地获得优势帧，便可以惩罚电风，一八可以反应后用魔神拳读他切换 跟读闪一样。听起来像打宝可梦训练家，一八可以在1a3a后放帧等宝可梦切换 再魔神，打修尔克同理'");
                 }
                 ((JavascriptExecutor) driver).executeScript("document.getElementsByClassName('c-fighter-details__table-notes')[" + i + "].outerHTML=document.getElementsByClassName('c-fighter-details__table-notes')[" + i + "].outerHTML" + replacestr);
                 ((JavascriptExecutor) driver).executeScript("document.getElementsByClassName('c-fighter-details__table-notes')[" + i + "].outerHTML=document.getElementsByClassName('c-fighter-details__table-notes')[" + i + "].outerHTML" + replacestr.toString().replace(". ", ".  "));
@@ -241,6 +245,7 @@ public class kazuya extends SimpleListenerHost {
         }
         driver.quit();
     }
+
     public static void GetAllFix(String[] list, MessageEvent event) {
         MessageChainBuilder messageChainBuilder = new MessageChainBuilder();
         ForwardMessageBuilder forwardMessageBuilder = new ForwardMessageBuilder(event.getSubject());
@@ -286,7 +291,7 @@ public class kazuya extends SimpleListenerHost {
         LinkedHashMap<String, String> specialId = new LinkedHashMap<String, String>() {{
             put("squirtle/ivysaur/charizard", "pokemontrainer/pt/宝可梦训练家/宝可梦训练师/训练家/训练师");
             put("mythra/pyra", "光焰");
-            put("simon/richter", "恶魔城人/恶魔城");
+            put("simon/richter", "恶魔城人/恶魔城/恶魔人");
             put("ryu/ken", "街霸人/街霸");
         }};
         for (String key : specialId.keySet()) {
@@ -331,7 +336,7 @@ public class kazuya extends SimpleListenerHost {
             put("ken", "ken/肯");
             put("king_dedede", "king_dedede/kingdedede/ddd大王/企鹅");
             put("king_k_rool", "king_k_rool/kingkrool/鳄鱼王/库鲁鲁王");
-            put("kirby", "kirby/卡比/粉团子");
+            put("kirby", "kirby/卡比/粉团子/粉色恶魔");
             put("little_mac", "little_mac/littlemac/小麦克");
             put("lucario", "lucario/路卡利欧");
             put("lucas", "lucas/卢卡斯/特朗普");
@@ -372,8 +377,8 @@ public class kazuya extends SimpleListenerHost {
             put("ryu", "ryu/隆");
             put("sephiroth", "sephiroth/萨菲罗斯/片翼");
             put("sheik", "sheik/希克");
-            put("shulk", "shulk/修尔克/秀尔克");
-            put("simon", "simon/西蒙/恶魔城人");
+            put("shulk", "shulk/修尔克/秀尔克/byd");
+            put("simon", "simon/西蒙");
             put("snake", "snake/斯内克/史内克/蛇叔");
             put("sonic", "sonic/索尼克/蓝刺猬");
             put("sora", "sora/索拉");
@@ -763,25 +768,25 @@ public class kazuya extends SimpleListenerHost {
 //        String qq_id = String.valueOf(event.getSender().getId());
         MessageChainBuilder messageChainBuilder = new MessageChainBuilder();
         messageChainBuilder.append("菜单:" + "\n" + "前缀为 18 或 一八 " + "\n" + "以下内容为 <前缀>+[指令]" + "\n" + "如 18/一八 菜单" +
-                "\n " + "-列表" +
-                "\n " + "-(角色名 使用[列表]中的可用值)" +
-                "\n " + "-方向" +
-                "\n " + "-简易" +
-                "\n " + "-下投" +
-                "\n " + "-横s" +
-                "\n " + "-空n" +
-                "\n " + "-蹲a" +
-                "\n " + "-1a" +
-                "\n " + "-魔神" +
-                "\n" + "以下内容为 直接使用[指令]" +
-                "\n " + "vip" +
-                "\n " + "喜报 (内容)" +
-                "\n " + "悲报 (内容)" +
-                "\n " + "重锤{@}" +
-                "\n " + "吸入{@}" +
-                "\n " + "(角色名)/(地区) {(群/群号) 必须在开头或结尾}");
+                                   "\n " + "-列表" +
+                                   "\n " + "-(角色名 使用[列表]中的可用值)" +
+                                   "\n " + "-方向" +
+                                   "\n " + "-简易" +
+                                   "\n " + "-下投" +
+                                   "\n " + "-横s" +
+                                   "\n " + "-空n" +
+                                   "\n " + "-蹲a" +
+                                   "\n " + "-1a" +
+                                   "\n " + "-魔神" +
+                                   "\n" + "以下内容为 直接使用[指令]" +
+                                   "\n " + "vip" +
+                                   "\n " + "喜报 (内容)" +
+                                   "\n " + "悲报 (内容)" +
+                                   "\n " + "重锤{@}" +
+                                   "\n " + "吸入{@}" +
+                                   "\n " + "(角色名)/(地区) {(群/群号) 必须在开头或结尾}");
 //        if (qq_id.equals("793888025") || qq_id.equals("1613341351"))
-            event.getSubject().sendMessage(messageChainBuilder.build());
+        event.getSubject().sendMessage(messageChainBuilder.build());
     }
 
 

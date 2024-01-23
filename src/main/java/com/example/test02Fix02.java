@@ -12,13 +12,17 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.chrome.ChromeOptions;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
-import java.io.*;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Files;
 import java.util.LinkedHashMap;
+
+import static com.example.Selenium_ChromeDriver.CreateDriverBystr;
+
 
 public class test02Fix02 extends SimpleListenerHost {
 	public static MessageEvent getEvent() {
@@ -28,7 +32,7 @@ public class test02Fix02 extends SimpleListenerHost {
 	public static void setEvent(MessageEvent event) {
 		test02Fix02.event = event;
 	}
-
+	static final String BaseUrl = "https://wiki.52poke.com/wiki/";
 	static MessageEvent event = null;
 	static String[] commandList = new String[]{"查询", "进化", "获取", "闪光","种族值"};
 
@@ -47,9 +51,9 @@ public class test02Fix02 extends SimpleListenerHost {
 		return ListeningStatus.LISTENING;
 	}
 
-	public static void GetMethod(String input) throws Exception {
+	public void GetMethod(String input) {
 		System.out.println(input);
-		String name = "";
+		String name;
 		String str = input;
 		if (input.trim().startsWith("查询")) {
 			str = input.replaceAll("查询", "").trim();
@@ -99,43 +103,28 @@ public class test02Fix02 extends SimpleListenerHost {
 		return Pid;
 	}
 
-	public static MessageChain GetPokemon(String name) throws Exception {
-		MessageChain chain = MessageUtils.newChain();
-		String u = "https://wiki.52poke.com/wiki/";
-		Document document = Jsoup.connect(u + name).timeout(50000).get();
-//		System.out.println(document);
-		Element element = document.getElementById("获得方式").parent().nextElementSibling().child(0);
-		System.out.println(element.childrenSize());
-		for (int i = 1; i < element.childrenSize() - 1; i++) {
-			System.out.println(element.select("tr:nth-child(" + (i + 1) + ")").text());
-			chain = new MessageChainBuilder()
-					.append(chain)
-					.append(element.select("tr:nth-child(" + (i + 1) + ")").text()+"\n")
-					.build();
+	public void GetPokemon(String name) {
+		ChromeDriver driver = CreateDriverBystr(BaseUrl + name);
+		try {
+			driver.executeScript("document.getElementById(\"获得方式\").parentElement.nextSibling.nextSibling.children[0].children[0].remove()");
+			driver.executeScript("document.getElementById(\"获得方式\").parentElement.nextSibling.nextSibling.children[0].id='GetPokemon'");
+			SendImageFile(WebImg.extracted(driver.findElement(By.id("GetPokemon")),driver));
+		} catch (Exception e) {
+//			e.printStackTrace();
+			sendError(new Exception("js error/可能是id错误"));
 		}
-		return chain;
+		driver.quit();
 	}
 
-	public static void GetLevel(String name) throws Exception {
-		String u = "https://wiki.52poke.com/wiki/";
-		System.setProperty("webdriver.chrome.driver","D:/Downloads/chromedriver.exe");
-		ChromeOptions options = new ChromeOptions();
-        options.addArguments("--headless");
-		options.addArguments("--disable-gpu");
-		options.addArguments("--no-sandbox");
-		options.addArguments("--log-level=3");
-		options.addArguments("--remote-allow-origins=*");
-
-		ChromeDriver driver = new ChromeDriver(options);
-		driver.get(u+name);
+	public static void GetLevel(String name) {
+		ChromeDriver driver = CreateDriverBystr(BaseUrl + name);
 		try {
 			String className =(String) driver.executeScript("return document.getElementsByClassName(\"mw-selflink selflink\")[0].parentElement.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement.className");
 			extracted("//table[@class=\""+className+"\"]",driver);
 		} catch (InterruptedException | IOException e) {
 //			e.printStackTrace();
-			sendError(e);
+			sendError(new Exception("js error/可能是id错误"));
 		}
-
 		driver.quit();
 	}
 
@@ -205,7 +194,7 @@ public class test02Fix02 extends SimpleListenerHost {
 
 	public static String GenName(char c) {
 		String G = null;
-		LinkedHashMap<String, Character> lhm = new LinkedHashMap<String, Character>();
+		LinkedHashMap<String, Character> lhm = new LinkedHashMap<>();
 		lhm.put("一", '1');
 		lhm.put("二", '2');
 		lhm.put("三", '3');
@@ -248,24 +237,14 @@ public class test02Fix02 extends SimpleListenerHost {
 //		}
 //	}
 
-	public static void GetBase(String name){
-		String u = "https://wiki.52poke.com/wiki/";
-		System.setProperty("webdriver.chrome.driver","D:/Downloads/chromedriver.exe");
-		ChromeOptions options = new ChromeOptions();
-		options.addArguments("--headless");
-		options.addArguments("--disable-gpu");
-		options.addArguments("--no-sandbox");
-		options.addArguments("--log-level=3");
-
-		ChromeDriver driver = new ChromeDriver(options);
-		driver.get(u+name);
+	public void GetBase(String name){
+		ChromeDriver driver = CreateDriverBystr(BaseUrl+name);
 		try {
 			extracted("//table[@style='white-space:nowrap']",driver);
 		} catch (InterruptedException | IOException e) {
 //			e.printStackTrace();
 			sendError(e);
 		}
-
 		driver.quit();
 	}
 
