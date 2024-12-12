@@ -6,7 +6,7 @@ plugins {
 }
 
 group = 'com.example'
-version = '0.8.0'
+version = '0.10.0'
 
 repositories {
     maven { url 'https://maven.aliyun.com/repository/public' }
@@ -26,5 +26,6 @@ dependencies {
     implementation 'org.apache.directory.studio:org.apache.commons.io:2.4'
     // https://mvnrepository.com/artifact/org.seleniumhq.selenium/selenium-java
     implementation group: 'org.seleniumhq.selenium', name: 'selenium-java', version: '4.11.0'
+    implementation 'com.github.houbb:opencc4j:1.6.2'
 }
 

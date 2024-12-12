@@ -16,13 +16,13 @@ import org.openqa.selenium.chrome.ChromeOptions;
 import java.io.File;
 import java.io.IOException;
 import java.net.ServerSocket;
-import java.net.URL;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import com.github.houbb.opencc4j.util.ZhConverterUtil;
 
 public class kazuya extends SimpleListenerHost {
     private static final String senderName = "ᕕ(◠ڼ◠)ᕗ";
@@ -40,6 +40,7 @@ public class kazuya extends SimpleListenerHost {
 //        System.out.println(event.getSubject().getId());
         String qqid = String.valueOf(event.getSubject().getId());
         String input = event.getMessage().contentToString().trim();
+        input = ZhConverterUtil.toSimple(input);
         if (input.equalsIgnoreCase("vip")) {
             String url = "https://kumamate.net/vip/";
             Document document = null;
@@ -64,7 +65,7 @@ public class kazuya extends SimpleListenerHost {
             String GroupId = GetPlaceGroup(input);
 
             String name = GetSpecialCharId(input);
-            if (name == null)
+            if (name.equals(input))
                 name = GetCharId(input);
             if (name != null)
                 GroupId = GetCharacterGroup(name);
@@ -88,7 +89,7 @@ public class kazuya extends SimpleListenerHost {
                 if (input.equals("菜单")) {
                     Menu(event);
                 }
-                if (input.equals("列表") || input.equals("方向") || input.equals("简易") || input.equals("下投") || input.equalsIgnoreCase("横S") || input.equalsIgnoreCase("空n") || input.equalsIgnoreCase("蹲a") || input.equalsIgnoreCase("1a") || input.equalsIgnoreCase("魔神")) {
+                if (input.equals("列表") || input.equals("方向") || input.equals("简易") || input.equals("下投") || input.equalsIgnoreCase("横S") || input.equalsIgnoreCase("空n") || input.equalsIgnoreCase("蹲a") || input.equalsIgnoreCase("1a") || input.equalsIgnoreCase("魔神")||input.equalsIgnoreCase("ferps")||input.equalsIgnoreCase("连段")) {
                     ImageList(event, input);
                 } else if (tmpList.length > 0) {
                     Set<String> nameSet = new LinkedHashSet<>();
@@ -251,15 +252,17 @@ public class kazuya extends SimpleListenerHost {
         ForwardMessageBuilder forwardMessageBuilder = new ForwardMessageBuilder(event.getSubject());
         int MaxTotal = 3;
         for (String name : list) {
-            File localfile = new File(image_path + name + ".png");
+            File localfile = new File(image_path +"character\\"+ name + ".png");
 
             Image image = null;
             if (localfile.exists()) {
                 image = Contact.uploadImage(event.getSubject(), localfile);
             }
 
-            messageChainBuilder.append(image);
-            forwardMessageBuilder.add(event.getBot().getId(), senderName, image);
+            if (image != null) {
+                messageChainBuilder.append(image);
+                forwardMessageBuilder.add(event.getBot().getId(), senderName, image);
+            }
         }
         if (list.length <= MaxTotal) {
             event.getSubject().sendMessage(messageChainBuilder.build().plus(new At(event.getSender().getId())));
@@ -290,7 +293,7 @@ public class kazuya extends SimpleListenerHost {
     public static String GetSpecialCharId(String input) {
         LinkedHashMap<String, String> specialId = new LinkedHashMap<String, String>() {{
             put("squirtle/ivysaur/charizard", "pokemontrainer/pt/宝可梦训练家/宝可梦训练师/训练家/训练师");
-            put("mythra/pyra", "光焰");
+            put("pyra/mythra", "光焰");
             put("simon/richter", "恶魔城人/恶魔城/恶魔人");
             put("ryu/ken", "街霸人/街霸");
         }};
@@ -388,7 +391,7 @@ public class kazuya extends SimpleListenerHost {
             put("villager", "villager/村民/岛民");
             put("wario", "wario/瓦力欧/瓦力奥/瓦利欧/瓦利奥/瓦里奥");
             put("wii_fit_trainer", "wii_fit_trainer/wiifittrainer/wiitrainer/wii教练/瑜伽教练/云佬");
-            put("wolf", "wolf/狼狗");
+            put("wolf", "wolf/狼狗/沃尔夫");
             put("yoshi", "yoshi/耀西/小恐龙/绿色恐龙");
             put("young_link", "young_link/年轻林克/杨林/younglink");
             put("zelda", "zelda/塞尔达");
@@ -595,7 +598,7 @@ public class kazuya extends SimpleListenerHost {
                 put("611657067", "ike");
                 put("1061419420", "squirtle/ivysaur/charizard");
                 put("746599849", "diddy_kong");
-                put("1003554541", "sonic");
+                put("980751050", "sonic");
                 put("656168440", "king_dedede");
                 put("862621550", "olimar");
                 put("1007101846", "lucario");
@@ -674,6 +677,7 @@ public class kazuya extends SimpleListenerHost {
                 put("浙江杭州", "967431986");
                 put("安徽合肥", "1156569477");
                 put("福建福州", "533945014");
+                put("福建厦门", "699525289");
                 put("四川成都", "897411161");
                 put("云南昆明", "610717346");
                 put("贵州贵阳", "742457225");
@@ -723,13 +727,13 @@ public class kazuya extends SimpleListenerHost {
         String image_id = null;
         switch (string) {
             case "列表":
-                image_id = "20230821";
+                image_id = "list";
                 break;
             case "方向":
                 image_id = "numpad";
                 break;
             case "简易":
-                image_id = "merge_from_ofoct";
+                image_id = "simple";
                 break;
             case "下投":
                 image_id = "down_throw";
@@ -753,15 +757,21 @@ public class kazuya extends SimpleListenerHost {
             case "魔神":
                 image_id = "demon_god_fist";
                 break;
+            case "ferps":
+            case "Ferps":
+                image_id = "ferps";
+                break;
+            case "连段":
+                image_id = "combo";
+                break;
         }
-        try {
-            image = Contact.uploadImage(event.getSubject(), new URL("https://captainunhappy.github.io/input/" + image_id + ".png").openConnection().getInputStream());
-        } catch (IOException e) {
-//            throw new RuntimeException(e);
-            SendError.send(e, event);
+        File localfile = new File(image_path +"other\\"+ image_id + ".png");
+        if (localfile.exists()) {
+            image = Contact.uploadImage(event.getSubject(), localfile);
         }
-        assert image != null;
-        event.getSubject().sendMessage(image.plus(new At(event.getSender().getId())));
+        if (image != null) {
+            event.getSubject().sendMessage(image.plus(new At(event.getSender().getId())));
+        }
     }
 
     private static void Menu(MessageEvent event) {
@@ -778,13 +788,17 @@ public class kazuya extends SimpleListenerHost {
                                    "\n " + "-蹲a" +
                                    "\n " + "-1a" +
                                    "\n " + "-魔神" +
+                                   "\n " + "-ferps" +
+                                   "\n " + "-连段" +
                                    "\n" + "以下内容为 直接使用[指令]" +
                                    "\n " + "vip" +
                                    "\n " + "喜报 (内容)" +
                                    "\n " + "悲报 (内容)" +
                                    "\n " + "重锤{@}" +
                                    "\n " + "吸入{@}" +
-                                   "\n " + "(角色名)/(地区) {(群/群号) 必须在开头或结尾}");
+                                   "\n " + "(角色名)/(地区) {(群/群号) 必须在开头或结尾}"+
+                                   "\n " + "5k(内容1){换行}(内容2)"
+        );
 //        if (qq_id.equals("793888025") || qq_id.equals("1613341351"))
         event.getSubject().sendMessage(messageChainBuilder.build());
     }
