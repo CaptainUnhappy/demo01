@@ -1,15 +1,15 @@
 package com.example;
 
+import com.github.houbb.opencc4j.util.ZhConverterUtil;
 import net.mamoe.mirai.contact.Contact;
 import net.mamoe.mirai.event.EventHandler;
 import net.mamoe.mirai.event.ListeningStatus;
 import net.mamoe.mirai.event.SimpleListenerHost;
+import net.mamoe.mirai.event.events.GroupMessageEvent;
 import net.mamoe.mirai.event.events.MessageEvent;
 import net.mamoe.mirai.message.data.*;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
-import org.openqa.selenium.By;
-import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 
@@ -20,9 +20,6 @@ import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.Set;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-import com.github.houbb.opencc4j.util.ZhConverterUtil;
 
 public class kazuya extends SimpleListenerHost {
     private static final String senderName = "ᕕ(◠ڼ◠)ᕗ";
@@ -36,7 +33,7 @@ public class kazuya extends SimpleListenerHost {
     static String image_path = "D:\\Downloads\\kazuya_image\\";
 
     @EventHandler
-    private ListeningStatus onEvent(MessageEvent event) {
+    private ListeningStatus onEvent( GroupMessageEvent event) {
 //        System.out.println(event.getSubject().getId());
         String qqid = String.valueOf(event.getSubject().getId());
         String input = event.getMessage().contentToString().trim();
@@ -78,7 +75,9 @@ public class kazuya extends SimpleListenerHost {
             }
             // TODO ADMIN_USER_ID fix input & data test
 //        } else if (startNumber(commandList, input) != -1 && (qqid.equals(QQ_GROUP_ID) || qqid.equals("793888025")  || qqid.equals("1613341351"))) {
-        } else if (startNumber(commandList, input) != -1 && (qqid.equals(QQ_GROUP_ID) || event.getSender().getId() == ADMIN_USER_ID || qqid.equals("1613341351"))) {
+        } else if (startNumber(commandList, input) != -1
+//                   && (qqid.equals(QQ_GROUP_ID) || event.getSender().getId() == ADMIN_USER_ID || qqid.equals("1613341351"))
+                   ) {
             try {
 //                if (ChromeDriver == null) CreateChromeDriver();
                 input = replaceCommand(commandList, input.trim());
@@ -158,94 +157,94 @@ public class kazuya extends SimpleListenerHost {
         }
     }
 
-    public static void GetAll(String[] list, MessageEvent event, ChromeDriver driver) {
-//        ChromeDriver driver = getChromeDriver();
-        MessageChainBuilder messageChainBuilder = new MessageChainBuilder();
-        ForwardMessageBuilder forwardMessageBuilder = new ForwardMessageBuilder(event.getSubject());
-        int MaxTotal = 3;
-        for (String name : list) {
-            driver.get(url + name);
-
-            int numBtn = Integer.parseInt(String.valueOf(((JavascriptExecutor) driver).executeScript("return document.getElementsByClassName('c-fighter-details__body-heading').length")));
-            for (int i = 0; i < numBtn; i++)
-                ((JavascriptExecutor) driver).executeScript("document.getElementsByClassName('c-fighter-details__body-heading')[" + i + "].outerHTML = document.getElementsByClassName('c-fighter-details__body-heading')[" + i + "].outerHTML.replaceAll('Combo Tree','连招表').replaceAll('EWGF-&gt;Nair-&gt;DGF %s','电风空n魔神真连区间表').replaceAll('Other Information','关于其他')");
-
-            String[] notes = {};
-            String note = GetNotes(name);
-            if (note != null) notes = note.split("\\|");
-//        System.out.println(note);
-            int webnotesize = Integer.parseInt(String.valueOf(((JavascriptExecutor) driver).executeScript("return document.getElementsByClassName('c-fighter-details__table-notes').length")));
-            StringBuilder replacestr = new StringBuilder();
-            for (int i = 0; i < notes.length; i += 2) {
-                replacestr.append(".replace(\"").append(notes[i]).append("\".replace(\"NOTES: \",\"\"),\"").append(notes[i + 1]).append("\")");
-            }
-//	        System.out.println(replace);
-            for (int i = 0; i < webnotesize; i++) {
-                if (name.equals("samus") || name.equals("dark_samus")) {
-                    ((JavascriptExecutor) driver).executeScript("document.querySelector(\"#details-combo-tree > table:nth-child(2) > tbody > tr:nth-child(2) > td:nth-child(2)\").innerHTML ='<i class=\"icon-false text-no\" title=\"No\"></i>'");
-                } else if (name.equals("shulk")) {
-                    ((JavascriptExecutor) driver).executeScript("document.querySelector(\"body > div.fade.c-fighter-details.modal.show > div > div > div.c-fighter-details__body > button:nth-child(1) > h3\").innerHTML='对局中特定技能 注意事项'\n" +
-                                                                "document.querySelector(\"#details-specific-considerations > h4:nth-child(1)\").innerHTML = '莫纳德-武技'\n" +
-                                                                "document.querySelector(\"#details-specific-considerations > p:nth-child(2)\").innerHTML='由于修尔克能在受击状态下切换武技来脱连 不同的武技对不同的招式效果也不同'\n" +
-                                                                "document.querySelector(\"#details-specific-considerations > p:nth-child(3)\").innerHTML='由于修尔克有这种选项，在大多数情况下\\n'+\n" +
-                                                                "'一八最喜欢看到的是修尔克进行简单的切换，这样可以讲修尔克至于不利的位置，比如简单的电风确认在修尔克没盾的时候也可以生效'\n" +
-                                                                "'由于修尔克能在受击状态下切换武技来脱连 不同的武技对不同的招式效果也不同'\n" +
-                                                                "document.querySelector(\"#details-specific-considerations > p:nth-child(4)\").innerHTML=\n" +
-                                                                "'简单的对策，简单的科普：修尔克不能在被抓住或者被绊倒或埋地的时候使用武技脱连，电风打中他武技状态是第一次电风命中的时候被击中的状态，而不是启动时的状态'\n" +
-                                                                "document.querySelector(\"#details-specific-considerations > h4:nth-child(6)\").innerHTML='对修尔克特定连段'\n" +
-                                                                "document.querySelector(\"#details-specific-considerations > p:nth-child(7)\").innerHTML='如果修尔克在一八的电风中开盾武技，最好的办法就是电风电风电风，你电风的次数取决于修尔克盾buff的持续时间或者修尔克想要关掉盾不给你连之前，你都是可以电风接电风的'\n" +
-                                                                "document.querySelector(\"#details-specific-considerations > h4:nth-child(9)\").innerHTML='电风被对策的情况'\n" +
-                                                                "document.querySelector(\"#details-specific-considerations > p.small.mb-0\").innerHTML='轮盘储存了疾之后，修尔克拥有了惩罚电风的能力，修尔克盾buff切疾buff的瞬间，缓冲了轮盘通过切换武技的无敌帧，修尔克会提前落地获得优势帧，便可以惩罚电风，一八可以反应后用魔神拳读他切换 跟读闪一样。听起来像打宝可梦训练家，一八可以在1a3a后放帧等宝可梦切换 再魔神，打修尔克同理'");
-                }
-                ((JavascriptExecutor) driver).executeScript("document.getElementsByClassName('c-fighter-details__table-notes')[" + i + "].outerHTML=document.getElementsByClassName('c-fighter-details__table-notes')[" + i + "].outerHTML" + replacestr);
-                ((JavascriptExecutor) driver).executeScript("document.getElementsByClassName('c-fighter-details__table-notes')[" + i + "].outerHTML=document.getElementsByClassName('c-fighter-details__table-notes')[" + i + "].outerHTML" + replacestr.toString().replace(". ", ".  "));
-
-                ((JavascriptExecutor) driver).executeScript("document.getElementsByClassName('c-fighter-details__table-notes')[" + i + "].outerHTML=document.getElementsByClassName('c-fighter-details__table-notes')[" + i + "].outerHTML\r\n" + "    .replace(\"NOTES: Utilt is inconsistent\".replace(\"NOTES: \",\"\"),\"上T1不适用\")\r\n" + ".replace(\"NOTES: Too far to hit with buffered electric. Dthrow sends onto the BF plat starting at 3%.\".replace(\"NOTES: \",\"\"),\"太远了 缓冲电风打不到 3%开始，下投会把人摔到板上（小战场）\")\r\n" + ".replace(\"NOTES: Too far to hit with buffered electric\".replace(\"NOTES: \",\"\"),\"太远了 缓冲电风打不到\")\r\n" + ".replace(\"NOTES: Tippers when charged 6-9 frames\".replace(\"NOTES: \",\"\"),\"蓄力6-9帧的时候才能打到甜点\")\r\n" + ".replace(\"NOTES: Tippers when charged 0-3 frames\".replace(\"NOTES: \",\"\"),\"蓄力0-3帧的时候才能打到甜点\")\r\n" + ".replace(\"NOTES: Only hits when up against a ledge. Can charge slightly.\".replace(\"NOTES: \",\"\"),\"只在板边生效 可以稍微蓄力一会\")\r\n" + ".replace(\"NOTES: Only hits when up against a ledge\".replace(\"NOTES: \",\"\"),\"只在板边生效\")\r\n" + ".replace(\"NOTES: Only hits when it tippers. Does not tipper when up against ledge. Tippers when charged 3-8 frames.\".replace(\"NOTES: \",\"\"),\"只在甜点时生效 板边不适用 蓄力3-8帧的时候才能打到甜点\")\r\n" + ".replace(\"NOTES: Only 2-frames if doing up b from as far from ledge as possible\".replace(\"NOTES: \",\"\"),\"非贴边上B才能抓2帧\")\r\n" + ".replace(\"NOTES: If they face away you need to dash for 3-5 frames then EWGF\".replace(\"NOTES: \",\"\"),\"落地受击模型背朝一八时 确保推前3-5帧再电风\")\r\n" + ".replace(\"NOTES: Have a 3 frame window to walk then EWGF\".replace(\"NOTES: \",\"\"),\"确保推前3帧再电风\")\r\n" + ".replace(\"NOTES: Electric whiffs if they face away when they land\".replace(\"NOTES: \",\"\"),\"落地受击模型背朝一八时 电风无法打中\")\r\n" + ".replace(\"NOTES: Dthrow sends onto the BF plat even at 0\".replace(\"NOTES: \",\"\"),\"0%开始，下投会把人摔到板上（小战场）\")\r\n" + ".replace(\"NOTES: Does not work if they face in when they land\".replace(\"NOTES: \",\"\"),\"落地受击模型面朝一八时 电风无法打中\")\r\n" + ".replace(\"NOTES: Does not work if they face away when they land\".replace(\"NOTES: \",\"\"),\"落地受击模型背朝一八时 电风无法打中\")\r\n" + ".replace(\"NOTES: Can SDI in and air dodge away/down and away. Possible to hit with specific spacing.\".replace(\"NOTES: \",\"\"),\"打点不好会被向内sdi后空闪脱连 确保有把握再出手\")\r\n" + ".replace(\"NOTES: Can charge slightly at ledge\".replace(\"NOTES: \",\"\"),\"在板边的话 可以多蓄力一会\")\r\n" + ".replace(\"NOTES: Can charge slightly\".replace(\"NOTES: \",\"\"),\"可以多蓄力一会\")\r\n" + ".replace(\"*Couldn't get SH consistently go for FH almost exclusively\".replace(\"NOTES: \",\"\"),\"小跳难稳定，只用大跳就好\")");
-            }
-            for (int i = 0; i < webnotesize; i++) {
-                String str = (String) ((JavascriptExecutor) driver).executeScript("return  document.getElementsByClassName(\"c-fighter-details__table-notes\")[" + i + "].outerText");
-                String regex = "[a-zA-Z]+\\s[a-zA-Z]+";
-                Pattern pattern = Pattern.compile(regex);
-                Matcher matcher = pattern.matcher(str);
-                boolean result = matcher.find();
-                if (result) {
-//                System.out.println(name + "\t" + str);
-                    event.getSubject().sendMessage("notes可能异常:\n" + str.replace("NOTES:", ""));
-                }
-            }
-            ((JavascriptExecutor) driver).executeScript("document.getElementsByClassName('c-fighter-details__stats')[0].outerHTML = document.getElementsByClassName('c-fighter-details__stats')[0].outerHTML.replace('weight','体重').replace('Fall Speed','落速').replaceAll('Airdodge','空闪').replace('Fastest Escape','最快脱离')");
-            ((JavascriptExecutor) driver).executeScript("document.getElementById('details-combo-tree').outerHTML = document.getElementById('details-combo-tree').outerHTML.replace('Dthrow','下投').replace('EWGF','电风').replace('Tsunami','TSUNAMI(3a)系列').replace('Electric','电风').replace('Utilt','上T1').replace('C.Jab','蹲A').replaceAll('N/A','不适当').replaceAll('Nair','NAIR(空n)系列').replaceAll('Stature Smash','STATURE(1a)系列').replaceAll('Crouch Jab','CROUCH JAB(蹲A)系列').replaceAll('DGF','魔神').replaceAll('Fsmash','横S').replaceAll('Hits?','命中?').replaceAll('Tippers?','甜点?').replace('Works Normally?','是否可行')");
-            ((JavascriptExecutor) driver).executeScript("document.getElementById('details-other-info').outerHTML = document.getElementById('details-other-info').outerHTML.replace('EWGF On Block','电风推盾').replaceAll('Advantage','有利帧').replaceAll('Chance to Trip?','推盾摔倒?').replaceAll('Dragon Uppercut','雷神拳选项').replaceAll('Hits Ledge Hang','打挂边').replaceAll('2-Frames','抓2帧').replaceAll('Rapid Jab','百裂/Jab连打').replaceAll('Can Armor?','霸体').replaceAll('Armors Until','护甲')");
-            ((JavascriptExecutor) driver).executeScript("document.getElementById('details-ewgf-nair-dgf').outerHTML = document.getElementById('details-ewgf-nair-dgf').outerHTML.replaceAll('Lowest Achieved','最低点空n速降').replaceAll('Consistent Low','上升空n速降(小跳到大跳之间缓冲)').replaceAll('Full Hop Max','最大值满跳空n速降(打头顶)').replaceAll('Short Hop Max','最小值小跳空n速降(打裆部)')");
-
-
-            String escape = GetEscape(name);
-            if (escape != null) {
-                ((JavascriptExecutor) driver).executeScript("document.getElementsByClassName('c-fighter-details__stats')[0].children[4].children[1].outerHTML = '<span>" + escape + "</span>'");
-            }
-
-            try {
-                //qq群
-                ((JavascriptExecutor) driver).executeScript("document.getElementsByClassName('c-fighter-details__body')[0].append('欢迎加入一八QQ群:261965114')");
-            } catch (Exception e) {
-                SendError.send("群号err", event);
-            }
-            try {
-                Image image = Contact.uploadImage(event.getSubject(), WebImg.extracted(driver.findElement(By.xpath("//div[@class='modal-content']")), driver));
-                messageChainBuilder.append(image);
-                forwardMessageBuilder.add(event.getBot().getId(), senderName, image);
-            } catch (InterruptedException | IOException e) {
-                SendError.send("Interrupted|IO Exception", event);
-            }
-        }
-        if (list.length <= MaxTotal) {
-            event.getSubject().sendMessage(messageChainBuilder.build().plus(new At(event.getSender().getId())));
-        } else {
-            ForwardMessage forward = forwardMessageBuilder.build();
-            event.getSubject().sendMessage(forward);
-        }
-        driver.quit();
-    }
+//    public static void GetAll(String[] list, MessageEvent event, ChromeDriver driver) {
+////        ChromeDriver driver = getChromeDriver();
+//        MessageChainBuilder messageChainBuilder = new MessageChainBuilder();
+//        ForwardMessageBuilder forwardMessageBuilder = new ForwardMessageBuilder(event.getSubject());
+//        int MaxTotal = 3;
+//        for (String name : list) {
+//            driver.get(url + name);
+//
+//            int numBtn = Integer.parseInt(String.valueOf(((JavascriptExecutor) driver).executeScript("return document.getElementsByClassName('c-fighter-details__body-heading').length")));
+//            for (int i = 0; i < numBtn; i++)
+//                ((JavascriptExecutor) driver).executeScript("document.getElementsByClassName('c-fighter-details__body-heading')[" + i + "].outerHTML = document.getElementsByClassName('c-fighter-details__body-heading')[" + i + "].outerHTML.replaceAll('Combo Tree','连招表').replaceAll('EWGF-&gt;Nair-&gt;DGF %s','电风空n魔神真连区间表').replaceAll('Other Information','关于其他')");
+//
+//            String[] notes = {};
+//            String note = GetNotes(name);
+//            if (note != null) notes = note.split("\\|");
+////        System.out.println(note);
+//            int webnotesize = Integer.parseInt(String.valueOf(((JavascriptExecutor) driver).executeScript("return document.getElementsByClassName('c-fighter-details__table-notes').length")));
+//            StringBuilder replacestr = new StringBuilder();
+//            for (int i = 0; i < notes.length; i += 2) {
+//                replacestr.append(".replace(\"").append(notes[i]).append("\".replace(\"NOTES: \",\"\"),\"").append(notes[i + 1]).append("\")");
+//            }
+////	        System.out.println(replace);
+//            for (int i = 0; i < webnotesize; i++) {
+//                if (name.equals("samus") || name.equals("dark_samus")) {
+//                    ((JavascriptExecutor) driver).executeScript("document.querySelector(\"#details-combo-tree > table:nth-child(2) > tbody > tr:nth-child(2) > td:nth-child(2)\").innerHTML ='<i class=\"icon-false text-no\" title=\"No\"></i>'");
+//                } else if (name.equals("shulk")) {
+//                    ((JavascriptExecutor) driver).executeScript("document.querySelector(\"body > div.fade.c-fighter-details.modal.show > div > div > div.c-fighter-details__body > button:nth-child(1) > h3\").innerHTML='对局中特定技能 注意事项'\n" +
+//                                                                "document.querySelector(\"#details-specific-considerations > h4:nth-child(1)\").innerHTML = '莫纳德-武技'\n" +
+//                                                                "document.querySelector(\"#details-specific-considerations > p:nth-child(2)\").innerHTML='由于修尔克能在受击状态下切换武技来脱连 不同的武技对不同的招式效果也不同'\n" +
+//                                                                "document.querySelector(\"#details-specific-considerations > p:nth-child(3)\").innerHTML='由于修尔克有这种选项，在大多数情况下\\n'+\n" +
+//                                                                "'一八最喜欢看到的是修尔克进行简单的切换，这样可以讲修尔克至于不利的位置，比如简单的电风确认在修尔克没盾的时候也可以生效'\n" +
+//                                                                "'由于修尔克能在受击状态下切换武技来脱连 不同的武技对不同的招式效果也不同'\n" +
+//                                                                "document.querySelector(\"#details-specific-considerations > p:nth-child(4)\").innerHTML=\n" +
+//                                                                "'简单的对策，简单的科普：修尔克不能在被抓住或者被绊倒或埋地的时候使用武技脱连，电风打中他武技状态是第一次电风命中的时候被击中的状态，而不是启动时的状态'\n" +
+//                                                                "document.querySelector(\"#details-specific-considerations > h4:nth-child(6)\").innerHTML='对修尔克特定连段'\n" +
+//                                                                "document.querySelector(\"#details-specific-considerations > p:nth-child(7)\").innerHTML='如果修尔克在一八的电风中开盾武技，最好的办法就是电风电风电风，你电风的次数取决于修尔克盾buff的持续时间或者修尔克想要关掉盾不给你连之前，你都是可以电风接电风的'\n" +
+//                                                                "document.querySelector(\"#details-specific-considerations > h4:nth-child(9)\").innerHTML='电风被对策的情况'\n" +
+//                                                                "document.querySelector(\"#details-specific-considerations > p.small.mb-0\").innerHTML='轮盘储存了疾之后，修尔克拥有了惩罚电风的能力，修尔克盾buff切疾buff的瞬间，缓冲了轮盘通过切换武技的无敌帧，修尔克会提前落地获得优势帧，便可以惩罚电风，一八可以反应后用魔神拳读他切换 跟读闪一样。听起来像打宝可梦训练家，一八可以在1a3a后放帧等宝可梦切换 再魔神，打修尔克同理'");
+//                }
+//                ((JavascriptExecutor) driver).executeScript("document.getElementsByClassName('c-fighter-details__table-notes')[" + i + "].outerHTML=document.getElementsByClassName('c-fighter-details__table-notes')[" + i + "].outerHTML" + replacestr);
+//                ((JavascriptExecutor) driver).executeScript("document.getElementsByClassName('c-fighter-details__table-notes')[" + i + "].outerHTML=document.getElementsByClassName('c-fighter-details__table-notes')[" + i + "].outerHTML" + replacestr.toString().replace(". ", ".  "));
+//
+//                ((JavascriptExecutor) driver).executeScript("document.getElementsByClassName('c-fighter-details__table-notes')[" + i + "].outerHTML=document.getElementsByClassName('c-fighter-details__table-notes')[" + i + "].outerHTML\r\n" + "    .replace(\"NOTES: Utilt is inconsistent\".replace(\"NOTES: \",\"\"),\"上T1不适用\")\r\n" + ".replace(\"NOTES: Too far to hit with buffered electric. Dthrow sends onto the BF plat starting at 3%.\".replace(\"NOTES: \",\"\"),\"太远了 缓冲电风打不到 3%开始，下投会把人摔到板上（小战场）\")\r\n" + ".replace(\"NOTES: Too far to hit with buffered electric\".replace(\"NOTES: \",\"\"),\"太远了 缓冲电风打不到\")\r\n" + ".replace(\"NOTES: Tippers when charged 6-9 frames\".replace(\"NOTES: \",\"\"),\"蓄力6-9帧的时候才能打到甜点\")\r\n" + ".replace(\"NOTES: Tippers when charged 0-3 frames\".replace(\"NOTES: \",\"\"),\"蓄力0-3帧的时候才能打到甜点\")\r\n" + ".replace(\"NOTES: Only hits when up against a ledge. Can charge slightly.\".replace(\"NOTES: \",\"\"),\"只在板边生效 可以稍微蓄力一会\")\r\n" + ".replace(\"NOTES: Only hits when up against a ledge\".replace(\"NOTES: \",\"\"),\"只在板边生效\")\r\n" + ".replace(\"NOTES: Only hits when it tippers. Does not tipper when up against ledge. Tippers when charged 3-8 frames.\".replace(\"NOTES: \",\"\"),\"只在甜点时生效 板边不适用 蓄力3-8帧的时候才能打到甜点\")\r\n" + ".replace(\"NOTES: Only 2-frames if doing up b from as far from ledge as possible\".replace(\"NOTES: \",\"\"),\"非贴边上B才能抓2帧\")\r\n" + ".replace(\"NOTES: If they face away you need to dash for 3-5 frames then EWGF\".replace(\"NOTES: \",\"\"),\"落地受击模型背朝一八时 确保推前3-5帧再电风\")\r\n" + ".replace(\"NOTES: Have a 3 frame window to walk then EWGF\".replace(\"NOTES: \",\"\"),\"确保推前3帧再电风\")\r\n" + ".replace(\"NOTES: Electric whiffs if they face away when they land\".replace(\"NOTES: \",\"\"),\"落地受击模型背朝一八时 电风无法打中\")\r\n" + ".replace(\"NOTES: Dthrow sends onto the BF plat even at 0\".replace(\"NOTES: \",\"\"),\"0%开始，下投会把人摔到板上（小战场）\")\r\n" + ".replace(\"NOTES: Does not work if they face in when they land\".replace(\"NOTES: \",\"\"),\"落地受击模型面朝一八时 电风无法打中\")\r\n" + ".replace(\"NOTES: Does not work if they face away when they land\".replace(\"NOTES: \",\"\"),\"落地受击模型背朝一八时 电风无法打中\")\r\n" + ".replace(\"NOTES: Can SDI in and air dodge away/down and away. Possible to hit with specific spacing.\".replace(\"NOTES: \",\"\"),\"打点不好会被向内sdi后空闪脱连 确保有把握再出手\")\r\n" + ".replace(\"NOTES: Can charge slightly at ledge\".replace(\"NOTES: \",\"\"),\"在板边的话 可以多蓄力一会\")\r\n" + ".replace(\"NOTES: Can charge slightly\".replace(\"NOTES: \",\"\"),\"可以多蓄力一会\")\r\n" + ".replace(\"*Couldn't get SH consistently go for FH almost exclusively\".replace(\"NOTES: \",\"\"),\"小跳难稳定，只用大跳就好\")");
+//            }
+//            for (int i = 0; i < webnotesize; i++) {
+//                String str = (String) ((JavascriptExecutor) driver).executeScript("return  document.getElementsByClassName(\"c-fighter-details__table-notes\")[" + i + "].outerText");
+//                String regex = "[a-zA-Z]+\\s[a-zA-Z]+";
+//                Pattern pattern = Pattern.compile(regex);
+//                Matcher matcher = pattern.matcher(str);
+//                boolean result = matcher.find();
+//                if (result) {
+////                System.out.println(name + "\t" + str);
+//                    event.getSubject().sendMessage("notes可能异常:\n" + str.replace("NOTES:", ""));
+//                }
+//            }
+//            ((JavascriptExecutor) driver).executeScript("document.getElementsByClassName('c-fighter-details__stats')[0].outerHTML = document.getElementsByClassName('c-fighter-details__stats')[0].outerHTML.replace('weight','体重').replace('Fall Speed','落速').replaceAll('Airdodge','空闪').replace('Fastest Escape','最快脱离')");
+//            ((JavascriptExecutor) driver).executeScript("document.getElementById('details-combo-tree').outerHTML = document.getElementById('details-combo-tree').outerHTML.replace('Dthrow','下投').replace('EWGF','电风').replace('Tsunami','TSUNAMI(3a)系列').replace('Electric','电风').replace('Utilt','上T1').replace('C.Jab','蹲A').replaceAll('N/A','不适当').replaceAll('Nair','NAIR(空n)系列').replaceAll('Stature Smash','STATURE(1a)系列').replaceAll('Crouch Jab','CROUCH JAB(蹲A)系列').replaceAll('DGF','魔神').replaceAll('Fsmash','横S').replaceAll('Hits?','命中?').replaceAll('Tippers?','甜点?').replace('Works Normally?','是否可行')");
+//            ((JavascriptExecutor) driver).executeScript("document.getElementById('details-other-info').outerHTML = document.getElementById('details-other-info').outerHTML.replace('EWGF On Block','电风推盾').replaceAll('Advantage','有利帧').replaceAll('Chance to Trip?','推盾摔倒?').replaceAll('Dragon Uppercut','雷神拳选项').replaceAll('Hits Ledge Hang','打挂边').replaceAll('2-Frames','抓2帧').replaceAll('Rapid Jab','百裂/Jab连打').replaceAll('Can Armor?','霸体').replaceAll('Armors Until','护甲')");
+//            ((JavascriptExecutor) driver).executeScript("document.getElementById('details-ewgf-nair-dgf').outerHTML = document.getElementById('details-ewgf-nair-dgf').outerHTML.replaceAll('Lowest Achieved','最低点空n速降').replaceAll('Consistent Low','上升空n速降(小跳到大跳之间缓冲)').replaceAll('Full Hop Max','最大值满跳空n速降(打头顶)').replaceAll('Short Hop Max','最小值小跳空n速降(打裆部)')");
+//
+//
+//            String escape = GetEscape(name);
+//            if (escape != null) {
+//                ((JavascriptExecutor) driver).executeScript("document.getElementsByClassName('c-fighter-details__stats')[0].children[4].children[1].outerHTML = '<span>" + escape + "</span>'");
+//            }
+//
+//            try {
+//                //qq群
+//                ((JavascriptExecutor) driver).executeScript("document.getElementsByClassName('c-fighter-details__body')[0].append('欢迎加入一八QQ群:261965114')");
+//            } catch (Exception e) {
+//                SendError.send("群号err", event);
+//            }
+//            try {
+//                Image image = Contact.uploadImage(event.getSubject(), WebImg.extracted(driver.findElement(By.xpath("//div[@class='modal-content']")), driver));
+//                messageChainBuilder.append(image);
+//                forwardMessageBuilder.add(event.getBot().getId(), senderName, image);
+//            } catch (InterruptedException | IOException e) {
+//                SendError.send("Interrupted|IO Exception", event);
+//            }
+//        }
+//        if (list.length <= MaxTotal) {
+//            event.getSubject().sendMessage(messageChainBuilder.build().plus(new At(event.getSender().getId())));
+//        } else {
+//            ForwardMessage forward = forwardMessageBuilder.build();
+//            event.getSubject().sendMessage(forward);
+//        }
+//        driver.quit();
+//    }
 
     public static void GetAllFix(String[] list, MessageEvent event) {
         MessageChainBuilder messageChainBuilder = new MessageChainBuilder();
@@ -271,7 +270,30 @@ public class kazuya extends SimpleListenerHost {
             event.getSubject().sendMessage(forward);
         }
     }
+    public static void GetAllFix(String[] list, GroupMessageEvent event) {
+        MessageChainBuilder messageChainBuilder = new MessageChainBuilder();
+        ForwardMessageBuilder forwardMessageBuilder = new ForwardMessageBuilder(event.getSubject());
+        int MaxTotal = 3;
+        for (String name : list) {
+            File localfile = new File(image_path +"character\\"+ name + ".png");
 
+            Image image = null;
+            if (localfile.exists()) {
+                image = Contact.uploadImage(event.getSubject(), localfile);
+            }
+
+            if (image != null) {
+                messageChainBuilder.append(image);
+                forwardMessageBuilder.add(event.getBot().getId(), senderName, image);
+            }
+        }
+        if (list.length <= MaxTotal) {
+            event.getSubject().sendMessage(messageChainBuilder.build().plus(new At(event.getSender().getId())));
+        } else {
+            ForwardMessage forward = forwardMessageBuilder.build();
+            event.getSubject().sendMessage(forward);
+        }
+    }
     public static int startNumber(String[] array, String str) {
         for (int i = 0; i < array.length; i++) {
             if (str.startsWith(array[i])) {
@@ -773,8 +795,87 @@ public class kazuya extends SimpleListenerHost {
             event.getSubject().sendMessage(image.plus(new At(event.getSender().getId())));
         }
     }
+    public static void ImageList(GroupMessageEvent event, String string) {
+        Image image = null;
+        String image_id = null;
+        switch (string) {
+            case "列表":
+                image_id = "list";
+                break;
+            case "方向":
+                image_id = "numpad";
+                break;
+            case "简易":
+                image_id = "simple";
+                break;
+            case "下投":
+                image_id = "down_throw";
+                break;
+            case "横s":
+            case "横S":
+                image_id = "f_smash";
+                break;
+            case "空n":
+            case "空N":
+                image_id = "air_n";
+                break;
+            case "蹲a":
+            case "蹲A":
+                image_id = "crouch_jab";
+                break;
+            case "1a":
+            case "1A":
+                image_id = "1a";
+                break;
+            case "魔神":
+                image_id = "demon_god_fist";
+                break;
+            case "ferps":
+            case "Ferps":
+                image_id = "ferps";
+                break;
+            case "连段":
+                image_id = "combo";
+                break;
+        }
+        File localfile = new File(image_path +"other\\"+ image_id + ".png");
+        if (localfile.exists()) {
+            image = Contact.uploadImage(event.getSubject(), localfile);
+        }
+        if (image != null) {
+            event.getSubject().sendMessage(image.plus(new At(event.getSender().getId())));
+        }
+    }
 
     private static void Menu(MessageEvent event) {
+//        String qq_id = String.valueOf(event.getSender().getId());
+        MessageChainBuilder messageChainBuilder = new MessageChainBuilder();
+        messageChainBuilder.append("菜单:" + "\n" + "前缀为 18 或 一八 " + "\n" + "以下内容为 <前缀>+[指令]" + "\n" + "如 18/一八 菜单" +
+                                   "\n " + "-列表" +
+                                   "\n " + "-(角色名 使用[列表]中的可用值)" +
+                                   "\n " + "-方向" +
+                                   "\n " + "-简易" +
+                                   "\n " + "-下投" +
+                                   "\n " + "-横s" +
+                                   "\n " + "-空n" +
+                                   "\n " + "-蹲a" +
+                                   "\n " + "-1a" +
+                                   "\n " + "-魔神" +
+                                   "\n " + "-ferps" +
+                                   "\n " + "-连段" +
+                                   "\n" + "以下内容为 直接使用[指令]" +
+                                   "\n " + "vip" +
+                                   "\n " + "喜报 (内容)" +
+                                   "\n " + "悲报 (内容)" +
+                                   "\n " + "重锤{@}" +
+                                   "\n " + "吸入{@}" +
+                                   "\n " + "(角色名)/(地区) {(群/群号) 必须在开头或结尾}"+
+                                   "\n " + "5k(内容1){换行}(内容2)"
+        );
+//        if (qq_id.equals("793888025") || qq_id.equals("1613341351"))
+        event.getSubject().sendMessage(messageChainBuilder.build());
+    }
+    private static void Menu(GroupMessageEvent event) {
 //        String qq_id = String.valueOf(event.getSender().getId());
         MessageChainBuilder messageChainBuilder = new MessageChainBuilder();
         messageChainBuilder.append("菜单:" + "\n" + "前缀为 18 或 一八 " + "\n" + "以下内容为 <前缀>+[指令]" + "\n" + "如 18/一八 菜单" +
