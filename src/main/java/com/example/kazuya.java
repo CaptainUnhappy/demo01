@@ -585,7 +585,7 @@ public class kazuya extends SimpleListenerHost {
     }
 
     private static Map<String, String> loadGroupMap() {
-        Map<String, String> map = new HashMap<>();
+        Map<String, String> map = new LinkedHashMap<>();
         try (BufferedReader reader = new BufferedReader(new FileReader(GROUP_FILE))) {
             String line;
             while ((line = reader.readLine()) != null) {
